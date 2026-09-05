@@ -40,13 +40,26 @@ Si une IP a changé, la modifier ici puis rebuild (étape suivante).
 
 ## 4. Compiler l'APK
 
-**Option A — Android Studio (interface graphique)**
+**Option A — script tout-en-un (recommandé une fois Android Studio installé une première fois)**
+
+```bash
+cd android-app
+./build-and-install.sh                      # 1 seul appareil adb connecté
+./build-and-install.sh 192.168.1.108:5555   # ou en précisant le device
+```
+
+Compile et installe en une commande, sans ouvrir Android Studio. Le script
+force `JAVA_HOME` sur le JDK 17 installé par Android Studio (`gradle.properties`
+du projet cible AGP 8.6, incompatible avec un `JAVA_HOME` système pointant
+vers un JDK 8 — adapter le chemin en tête de script si besoin).
+
+**Option B — Android Studio (interface graphique)**
 
 Menu **Build → Build Bundle(s) / APK(s) → Build APK(s)**. Une fois terminé,
 une notification "APK(s) generated successfully" apparaît avec un lien
 "locate" vers le fichier généré.
 
-**Option B — ligne de commande**
+**Option C — ligne de commande, étape par étape**
 
 ```bash
 cd android-app
@@ -54,7 +67,7 @@ cd android-app
 gradlew.bat assembleDebug      # Windows
 ```
 
-Dans les deux cas, l'APK est généré ici :
+Dans tous les cas, l'APK est généré ici :
 
 ```
 android-app/app/build/outputs/apk/debug/app-debug.apk

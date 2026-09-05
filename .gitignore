@@ -5,7 +5,6 @@ android-app/**/build/
 android-app/captures/
 android-app/*.iml
 android-app/.idea/
-android-app/gradle/wrapper/gradle-wrapper.jar
 
 # Éditeurs / OS
 .DS_Store
