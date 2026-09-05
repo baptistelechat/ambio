@@ -45,6 +45,8 @@ class MyDreamService : DreamService() {
         isFullscreen = true
         isScreenBright = true
 
+        WebView.setWebContentsDebuggingEnabled(true)
+
         scope = CoroutineScope(Dispatchers.Main + Job())
         root = FrameLayout(this).apply { setBackgroundColor(Color.BLACK) }
         setContentView(root)
