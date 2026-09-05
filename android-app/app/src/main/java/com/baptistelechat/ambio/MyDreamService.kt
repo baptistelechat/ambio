@@ -3,6 +3,7 @@ package com.baptistelechat.ambio
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.service.dreams.DreamService
+import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -118,7 +119,14 @@ class MyDreamService : DreamService() {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.mediaPlaybackRequiresUserGesture = false
-            webViewClient = WebViewClient()
+            // ponytail: reste invisible jusqu'au premier rendu pour éviter le flash blanc par défaut de la WebView
+            visibility = View.INVISIBLE
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    view?.visibility = View.VISIBLE
+                }
+            }
             webChromeClient = WebChromeClient()
             setBackgroundColor(Color.BLACK)
             loadUrl(url)

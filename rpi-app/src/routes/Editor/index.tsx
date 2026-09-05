@@ -14,7 +14,7 @@ export const Editor = () => {
   return (
     <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-4 p-6">
       <h1 className="text-xl font-semibold">Éditeur d'écran de veille</h1>
-      <div className="flex flex-1 gap-4">
+      <div className="flex flex-1 items-start gap-4">
         <Canvas />
         <Palette />
       </div>
