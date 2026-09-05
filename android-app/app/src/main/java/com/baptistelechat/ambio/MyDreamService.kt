@@ -119,6 +119,10 @@ class MyDreamService : DreamService() {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.mediaPlaybackRequiresUserGesture = false
+            // Sans ça, la WebView ignore le <meta viewport> de la page et rend en
+            // mode "desktop" à une largeur virtuelle réduite au lieu de la taille écran réelle
+            settings.useWideViewPort = true
+            settings.loadWithOverviewMode = true
             // ponytail: reste invisible jusqu'au premier rendu pour éviter le flash blanc par défaut de la WebView
             visibility = View.INVISIBLE
             webViewClient = object : WebViewClient() {
