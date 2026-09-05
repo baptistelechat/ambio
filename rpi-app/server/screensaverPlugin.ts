@@ -6,6 +6,7 @@ import ical, { type VEvent } from "node-ical";
 import type { Connect, Plugin } from "vite";
 import { WebSocketServer } from "ws";
 import { configSchema, defaultConfig } from "../src/lib/types.ts";
+import { normalizeConfig } from "../src/lib/configMigration.ts";
 
 type UpgradeCapableServer = {
   on(
@@ -19,11 +20,12 @@ const ASSETS_DIR = path.resolve(process.cwd(), "public/assets");
 
 const readConfig = () => {
   if (!fs.existsSync(CONFIG_PATH)) return defaultConfig;
-  return configSchema.parse(JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8")));
+  const raw = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+  return configSchema.parse(normalizeConfig(raw));
 };
 
 const writeConfig = (config: unknown) => {
-  const parsed = configSchema.parse(config);
+  const parsed = configSchema.parse(normalizeConfig(config));
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(parsed, null, 2));
   return parsed;
 };

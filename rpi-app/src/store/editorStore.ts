@@ -13,8 +13,10 @@ type EditorState = {
   config: Config;
   selectedWidgetId: string | null;
   status: "idle" | "loading" | "saving" | "saved" | "error";
+  showGrid: boolean;
   load: () => Promise<void>;
   select: (id: string | null) => void;
+  setShowGrid: (show: boolean) => void;
   addWidget: (type: WidgetType) => void;
   updateWidget: (id: string, patch: Partial<Widget>) => void;
   updateWidgetSettings: (id: string, settings: Record<string, unknown>) => void;
@@ -28,6 +30,9 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   config: defaultConfig,
   selectedWidgetId: null,
   status: "idle",
+  showGrid: true,
+
+  setShowGrid: (show) => set({ showGrid: show }),
 
   load: async () => {
     set({ status: "loading" });
@@ -46,10 +51,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     const widget: Widget = {
       id: crypto.randomUUID(),
       type,
-      x: 60,
-      y: 60,
-      width: defaults.width,
-      height: defaults.height,
+      col: 0,
+      row: 0,
       settings: { ...defaults.settings },
     };
     set((state) => ({

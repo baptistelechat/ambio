@@ -2,12 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
 import { widgetLabels } from "@/lib/types";
+import { widgetSettingsFields } from "@/lib/widgetSettings";
 import { useEditorStore } from "@/store/editorStore";
 
 export const SettingsPanel = () => {
@@ -19,6 +27,8 @@ export const SettingsPanel = () => {
   const updateWidgetSettings = useEditorStore((s) => s.updateWidgetSettings);
   const removeWidget = useEditorStore((s) => s.removeWidget);
 
+  const fields = widget ? (widgetSettingsFields[widget.type] ?? []) : [];
+
   return (
     <Sheet open={!!widget} onOpenChange={(open) => !open && select(null)}>
       <SheetContent>
@@ -28,39 +38,46 @@ export const SettingsPanel = () => {
               <SheetTitle>{widgetLabels[widget.type]}</SheetTitle>
             </SheetHeader>
 
-            {widget.type === "weather" && (
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="location">Localisation</Label>
-                <Input
-                  id="location"
-                  defaultValue={String(widget.settings.location ?? "")}
-                  onBlur={(e) =>
-                    updateWidgetSettings(widget.id, {
-                      location: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            )}
-
-            {widget.type === "agenda" && (
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="icsUrl">URL du calendrier (.ics)</Label>
-                <Input
-                  id="icsUrl"
-                  defaultValue={String(widget.settings.icsUrl ?? "")}
-                  onBlur={(e) =>
-                    updateWidgetSettings(widget.id, { icsUrl: e.target.value })
-                  }
-                />
-              </div>
-            )}
-
-            {(widget.type === "clock" || widget.type === "quote") && (
+            {fields.length === 0 && (
               <p className="text-sm text-muted-foreground">
                 Aucun réglage pour ce widget.
               </p>
             )}
+
+            {fields.map((field) => (
+              <div key={field.key} className="flex flex-col gap-2">
+                <Label htmlFor={field.key}>{field.label}</Label>
+                {field.kind === "text" ? (
+                  <Input
+                    id={field.key}
+                    defaultValue={String(widget.settings[field.key] ?? "")}
+                    onBlur={(e) =>
+                      updateWidgetSettings(widget.id, {
+                        [field.key]: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  <Select
+                    defaultValue={String(widget.settings[field.key] ?? "")}
+                    onValueChange={(value) =>
+                      updateWidgetSettings(widget.id, { [field.key]: value })
+                    }
+                  >
+                    <SelectTrigger id={field.key}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {field.options.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            ))}
 
             <Button
               variant="destructive"

@@ -1,9 +1,10 @@
 import { type Config, configSchema } from "@/lib/types";
+import { normalizeConfig } from "@/lib/configMigration";
 
 export const fetchConfig = async (): Promise<Config> => {
   const res = await fetch("/api/config");
   if (!res.ok) throw new Error(`GET /api/config failed: ${res.status}`);
-  return configSchema.parse(await res.json());
+  return configSchema.parse(normalizeConfig(await res.json()));
 };
 
 export const publishConfig = async (config: Config): Promise<void> => {

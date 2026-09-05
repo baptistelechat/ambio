@@ -5,8 +5,13 @@ import { fetchConfig, subscribeConfigUpdates } from "@/lib/configClient";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
+  CELL_HEIGHT,
+  CELL_WIDTH,
   type Config,
   defaultConfig,
+  GRID_GAP,
+  GRID_PADDING,
+  widgetDefaults,
 } from "@/lib/types";
 import { WidgetRenderer } from "@/widgets/WidgetRenderer";
 
@@ -36,20 +41,23 @@ export const Screensaver = () => {
       >
         <Background background={config.background} />
 
-        {config.widgets.map((widget) => (
-          <div
-            key={widget.id}
-            className="absolute"
-            style={{
-              left: widget.x,
-              top: widget.y,
-              width: widget.width,
-              height: widget.height,
-            }}
-          >
-            <WidgetRenderer widget={widget} />
-          </div>
-        ))}
+        {config.widgets.map((widget) => {
+          const { cols, rows } = widgetDefaults[widget.type];
+          return (
+            <div
+              key={widget.id}
+              className="absolute"
+              style={{
+                left: GRID_PADDING + widget.col * CELL_WIDTH + GRID_GAP / 2,
+                top: GRID_PADDING + widget.row * CELL_HEIGHT + GRID_GAP / 2,
+                width: cols * CELL_WIDTH - GRID_GAP,
+                height: rows * CELL_HEIGHT - GRID_GAP,
+              }}
+            >
+              <WidgetRenderer widget={widget} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
