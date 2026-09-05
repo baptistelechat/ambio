@@ -1,11 +1,11 @@
 ---
-id: BLK-001
+id: ZBLK-001
 type: blocker
 date: 2026-09-05
 tags: [react-rnd, freeze, drag, react19]
 ---
 
-# BLK-001 — Drag & drop figé visuellement dans l'éditeur (React 19)
+# ZBLK-001 — Drag & drop figé visuellement dans l'éditeur (React 19)
 
 | Friction                                                                        | Cause réelle                                                                         | Solution                                            | Statut |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------- | ------ |
@@ -13,4 +13,4 @@ tags: [react-rnd, freeze, drag, react19]
 
 ## Références
 
-- [LRN-001](../learnings/LRN-001.md) — pattern à réutiliser pour tout futur composant `react-rnd`
+- [LRN-001](../../learnings/LRN-001.md) — pattern à réutiliser pour tout futur composant `react-rnd`

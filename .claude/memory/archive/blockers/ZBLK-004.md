@@ -1,0 +1,16 @@
+---
+id: ZBLK-004
+type: blocker
+date: 2026-09-05
+tags: [git, securite, github, historique, claude-code]
+---
+
+# ZBLK-004 — IP Tailscale + user SSH committés publiquement, purge d'historique
+
+| Friction                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Cause réelle                                                                                                                                                                                            | Solution                                                                                                                                                                                                                                                                                        | Statut |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Le premier commit poussé sur le repo GitHub public (`ambio`) contenait l'IP Tailscale du RPi et le user SSH dans le README (générés par un skill readme-writer externe à l'insu du fil de travail). Retirer l'info des fichiers actuels ne suffisait pas : elle restait visible dans l'historique git. La réécriture d'historique (checkout orphelin + commit unique + force-push) était refusée par le classificateur de sécurité de Claude Code, même après confirmation explicite de l'utilisateur | Une politique de sécurité de l'outil bloque par défaut les commandes git destructives (réécriture d'historique, force-push), y compris quand l'utilisateur les a validées en amont dans la conversation | Faire éditer les fichiers par l'agent, puis demander à l'utilisateur de lancer lui-même la commande de réécriture via le préfixe `!` (exécution sous sa propre autorité, hors du classificateur de l'agent) — puis resynchroniser le clone du RPi (`git fetch && git reset --hard origin/main`) | résolu |
+
+## Références
+
+- [BDR-003](../../decisions/BDR-003.md) — workflow de déploiement git dont ce repo fait partie
