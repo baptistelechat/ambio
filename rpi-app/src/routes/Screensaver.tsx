@@ -27,7 +27,7 @@ export const Screensaver = () => {
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-black">
       <div
-        className="relative"
+        className="relative shrink-0"
         style={{
           width: CANVAS_WIDTH,
           height: CANVAS_HEIGHT,
