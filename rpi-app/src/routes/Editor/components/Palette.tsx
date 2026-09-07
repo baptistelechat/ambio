@@ -3,8 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import {
+  DEFAULT_GRADIENT_PRESET,
+  gradientPresets,
+} from "@/lib/gradientPresets";
 import {
   type WidgetCategory,
   widgetCategory,
@@ -23,6 +34,8 @@ const CATEGORY_TITLES: Record<WidgetCategory, string> = {
 
 export const Palette = () => {
   const addWidget = useEditorStore((s) => s.addWidget);
+  const background = useEditorStore((s) => s.config.background);
+  const setBackground = useEditorStore((s) => s.setBackground);
   const uploadBackground = useEditorStore((s) => s.uploadBackground);
   const publish = useEditorStore((s) => s.publish);
   const status = useEditorStore((s) => s.status);
@@ -86,6 +99,43 @@ export const Palette = () => {
               if (file) uploadBackground(file);
             }}
           />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="background-gradient">Fond dégradé</Label>
+          <Select
+            value={
+              background.type === "gradient"
+                ? (background.gradientPreset ?? DEFAULT_GRADIENT_PRESET)
+                : undefined
+            }
+            onValueChange={(value) =>
+              setBackground({
+                type: "gradient",
+                url: "",
+                gradientPreset: value,
+              })
+            }
+          >
+            <SelectTrigger id="background-gradient">
+              <SelectValue placeholder="Choisir un dégradé" />
+            </SelectTrigger>
+            <SelectContent>
+              {gradientPresets.map((preset) => (
+                <SelectItem key={preset.id} value={preset.id}>
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="size-4 shrink-0 rounded-full border border-black/10"
+                      style={{
+                        background: `linear-gradient(135deg, ${preset.color1}, ${preset.color2}, ${preset.color3})`,
+                      }}
+                    />
+                    {preset.label}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <Separator />

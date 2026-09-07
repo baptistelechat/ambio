@@ -35,8 +35,9 @@ export const widgetSchema = z.object({
 export type Widget = z.infer<typeof widgetSchema>;
 
 export const backgroundSchema = z.object({
-  type: z.enum(["image", "video"]),
+  type: z.enum(["image", "video", "gradient"]),
   url: z.string(),
+  gradientPreset: z.string().optional(),
 });
 export type Background = z.infer<typeof backgroundSchema>;
 
