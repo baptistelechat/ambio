@@ -43,3 +43,13 @@ Poursuite et finalisation du travail WigggleUI entamé la veille : ajout de 14 w
 - [BDR-010](decisions/BDR-010.md) — Garder les primitives du projet face à un registre tiers divergent
 - [BLK-006](blockers/BLK-006.md) — Le drag ne s'accrochait pas à la grille
 - [BLK-008](blockers/BLK-008.md) — Grille invisible, deux causes CSS cumulées
+
+## 2026-09-07
+
+Intégration du composant `<Grainient />` de React Bits comme troisième option de fond d'écran (à côté de image/vidéo) : rendu dégradé animé WebGL (`ogl`), sélectionnable dans l'éditeur via un `Select` listant 8 presets de couleurs curés à la main (Aurore, Coucher de soleil, Nébuleuse, Océan, Braise, Forêt, Minuit, Bonbon), chacun avec un petit cercle de prévisualisation en `linear-gradient` CSS directement dans le menu déroulant. Deux bugs WebGL non-évidents rencontrés et corrigés en testant en direct dans le navigateur : le canvas ne remplissait qu'un coin du conteneur scalé (double application du `transform:scale()` via le `setSize()` d'`ogl`), puis un changement de preset ne se voyait pas tant que la boucle `requestAnimationFrame` restait en pause. Commit `✨ (Wallpaper)` créé via `/gen-commit` après un premier message rejeté (scope et bullets pas assez clairs) — regénéré avec un scope "Wallpaper" et des puces plus factuelles, accepté au second essai. `CHANGELOG.md` mis à jour avec l'entrée utilisateur correspondante.
+
+**Entrées clés :**
+
+- [BDR-011](decisions/BDR-011.md) — Fond dégradé : presets curés plutôt qu'un color picker libre
+- [BLK-009](blockers/BLK-009.md) — Grainient mal affiché dans le canevas scalé de l'éditeur
+- [LRN-010](learnings/LRN-010.md) — Canvas WebGL sous `transform:scale()` : double réduction + peinture figée
