@@ -1,4 +1,5 @@
 import * as SheetPrimitive from "@radix-ui/react-dialog";
+import { cva, type VariantProps } from "class-variance-authority";
 import { XIcon } from "lucide-react";
 import type * as React from "react";
 
@@ -7,19 +8,35 @@ import { cn } from "@/lib/utils";
 const Sheet = SheetPrimitive.Root;
 const SheetClose = SheetPrimitive.Close;
 
+const sheetContentVariants = cva(
+  "fixed z-50 flex flex-col gap-4 bg-background p-4 shadow-lg",
+  {
+    variants: {
+      side: {
+        right: "inset-y-0 right-0 h-full w-full max-w-80 border-l",
+        bottom: "inset-x-0 bottom-0 h-auto max-h-[90vh] rounded-t-lg border-t",
+      },
+    },
+    defaultVariants: { side: "right" },
+  },
+);
+
+interface SheetContentProps
+  extends
+    React.ComponentProps<typeof SheetPrimitive.Content>,
+    VariantProps<typeof sheetContentVariants> {}
+
 function SheetContent({
   className,
+  side,
   children,
   ...props
-}: React.ComponentProps<typeof SheetPrimitive.Content>) {
+}: SheetContentProps) {
   return (
     <SheetPrimitive.Portal>
       <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
       <SheetPrimitive.Content
-        className={cn(
-          "fixed inset-y-0 right-0 z-50 flex h-full w-80 flex-col gap-4 border-l bg-background p-4 shadow-lg",
-          className,
-        )}
+        className={cn(sheetContentVariants({ side }), className)}
         {...props}
       >
         {children}

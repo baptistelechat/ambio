@@ -32,7 +32,13 @@ const CATEGORY_TITLES: Record<WidgetCategory, string> = {
   wiggleui: "WiggleUI",
 };
 
-export const Palette = () => {
+interface PaletteProps {
+  // ponytail: le Drawer mobile fournit déjà son propre chrome (bordure,
+  // arrondi) — inutile d'imbriquer une seconde Card dedans.
+  bare?: boolean;
+}
+
+export const Palette = ({ bare = false }: PaletteProps) => {
   const addWidget = useEditorStore((s) => s.addWidget);
   const background = useEditorStore((s) => s.config.background);
   const setBackground = useEditorStore((s) => s.setBackground);
@@ -42,8 +48,10 @@ export const Palette = () => {
   const showGrid = useEditorStore((s) => s.showGrid);
   const setShowGrid = useEditorStore((s) => s.setShowGrid);
 
+  const Wrapper = bare ? "div" : Card;
+
   return (
-    <Card className="flex h-full w-72 shrink-0 flex-col">
+    <Wrapper className="flex h-full w-full flex-col">
       <CardHeader>
         <CardTitle>Widgets</CardTitle>
       </CardHeader>
@@ -152,6 +160,6 @@ export const Palette = () => {
           </span>
         )}
       </CardContent>
-    </Card>
+    </Wrapper>
   );
 };

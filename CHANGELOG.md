@@ -18,6 +18,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - Animated gradient wallpaper option for the background, with 8 curated presets (Aurora,
   Sunset, Nebula, Ocean, Ember, Forest, Midnight, Candy) picked from a color-swatch selector
   in the editor
+- Mobile-friendly editor: on phones the canvas shows as a fullscreen, rotated live preview
+  that fills the screen edge-to-edge, with the widget picker and background settings tucked
+  into a bottom drawer you swipe up to open and down to dismiss
 
 ### Fixed
 
