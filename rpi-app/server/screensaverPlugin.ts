@@ -78,6 +78,9 @@ const readCpuTempC = (): number | null => {
   }
 };
 
+const readRamUsedPercent = (): number =>
+  Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100);
+
 const setupApi = (
   middlewares: Connect.Server,
   httpServer: UpgradeCapableServer,
@@ -208,6 +211,7 @@ const setupApi = (
         JSON.stringify({
           cpuTempC: readCpuTempC(),
           uptimeSeconds: os.uptime(),
+          ramUsedPercent: readRamUsedPercent(),
         }),
       );
       return;

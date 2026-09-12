@@ -1,6 +1,7 @@
 import type { Widget } from "@/lib/types";
 import { AgendaWidget } from "@/widgets/AgendaWidget";
 import { ClockWidget } from "@/widgets/ClockWidget";
+import { NewsTickerWidget } from "@/widgets/NewsTickerWidget";
 import { QuoteWidget } from "@/widgets/QuoteWidget";
 import { WeatherWidget } from "@/widgets/WeatherWidget";
 import WiggleClock1 from "@/components/wigggle/clock-01";
@@ -24,7 +25,7 @@ import WiggleQr1 from "@/components/wigggle/qr-01";
 import WiggleNameday1 from "@/components/wigggle/nameday-01";
 import WiggleAirQuality1 from "@/components/wigggle/air-quality-01";
 import WiggleAirQualityMd1 from "@/components/wigggle/air-quality-md-01";
-import WiggleSystemStatus1 from "@/components/wigggle/system-status-01";
+import WiggleSystemStatusMd1 from "@/components/wigggle/system-status-md-01";
 import WiggleUv1 from "@/components/wigggle/uv-01";
 import WigglePollen1 from "@/components/wigggle/pollen-01";
 import WiggleAirParticles1 from "@/components/wigggle/air-particles-01";
@@ -39,6 +40,8 @@ export const WidgetRenderer = ({ widget }: { widget: Widget }) => {
       return <QuoteWidget />;
     case "agenda":
       return <AgendaWidget settings={widget.settings} />;
+    case "newsTicker":
+      return <NewsTickerWidget settings={widget.settings} />;
     case "wiggleClock1":
       return <WiggleClock1 />;
     case "wiggleClock2":
@@ -81,8 +84,8 @@ export const WidgetRenderer = ({ widget }: { widget: Widget }) => {
       return <WiggleAirQuality1 settings={widget.settings} />;
     case "wiggleAirQualityMd1":
       return <WiggleAirQualityMd1 settings={widget.settings} />;
-    case "wiggleSystemStatus1":
-      return <WiggleSystemStatus1 />;
+    case "wiggleSystemStatusMd1":
+      return <WiggleSystemStatusMd1 />;
     case "wiggleUv1":
       return <WiggleUv1 settings={widget.settings} />;
     case "wigglePollen1":

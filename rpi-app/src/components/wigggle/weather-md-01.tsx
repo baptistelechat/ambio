@@ -4,16 +4,11 @@ import {
   ThermometerIcon,
   WindIcon,
 } from "lucide-react";
-import type * as React from "react";
 
 import { useConfiguredWeather } from "@/hooks/useConfiguredWeather";
 import { getWeatherIcon } from "@/lib/weather-utils";
 import { Label } from "@/components/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { InfoItem } from "@/components/ui/info-item";
 import { Widget, WidgetContent } from "@/components/ui/widget";
 
 export default function WidgetDemo({
@@ -54,21 +49,25 @@ export default function WidgetDemo({
               restent alignées quel que soit la largeur de chaque valeur
               ("10.1 km/h" vs "0 mm" ont des largeurs différentes). */}
           <InfoItem
+            layout="stack"
             icon={WindIcon}
             label="Vent"
             value={`${weather?.windSpeed} km/h`}
           />
           <InfoItem
+            layout="stack"
             icon={ThermometerIcon}
             label="Ressenti"
             value={`${weather?.feelsLike}°`}
           />
           <InfoItem
+            layout="stack"
             icon={CloudRainIcon}
             label="Précipitations"
             value={`${weather?.chanceOfRain} mm`}
           />
           <InfoItem
+            layout="stack"
             icon={DropletsIcon}
             label="Humidité"
             value={`${weather?.humidity}%`}
@@ -78,27 +77,3 @@ export default function WidgetDemo({
     </Widget>
   );
 }
-
-type InfoItemProps = {
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
-  label: string;
-  value: string;
-};
-
-const InfoItem = (el: InfoItemProps) => {
-  return (
-    <Tooltip delayDuration={300}>
-      <TooltipTrigger asChild>
-        <div className="space-y-2 text-center">
-          <el.icon className="stroke-muted-foreground mx-auto size-6" />
-          <Label className="justify-center text-base font-normal">
-            {el.value}
-          </Label>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent>
-        <Label className="text-sm font-normal">{el.label}</Label>
-      </TooltipContent>
-    </Tooltip>
-  );
-};

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 interface SystemStatusData {
   cpuTempC: number | null;
   uptimeSeconds: number;
+  ramUsedPercent: number | null;
 }
 
 export function useSystemStatus() {

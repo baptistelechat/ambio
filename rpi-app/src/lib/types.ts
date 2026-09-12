@@ -33,7 +33,7 @@ export const widgetTypeSchema = z.enum([
   "wigglePollen1",
   "wiggleAirParticles1",
   // Système
-  "wiggleSystemStatus1",
+  "wiggleSystemStatusMd1",
   // Utilitaires
   "wiggleQr1",
 ]);
@@ -140,7 +140,7 @@ export const widgetDefaults: Record<
     rows: 2,
     settings: { location: "Challans" },
   },
-  wiggleSystemStatus1: { cols: 2, rows: 2, settings: {} },
+  wiggleSystemStatusMd1: { cols: 4, rows: 1, settings: {} },
   wiggleQr1: {
     cols: 2,
     rows: 2,
@@ -176,7 +176,7 @@ export const widgetLabels: Record<WidgetType, string> = {
   wiggleUv1: "Indice UV",
   wigglePollen1: "Pollen",
   wiggleAirParticles1: "Particules fines",
-  wiggleSystemStatus1: "Statut Raspberry Pi",
+  wiggleSystemStatusMd1: "Statut Raspberry Pi",
   wiggleQr1: "QR code",
 };
 
@@ -210,7 +210,7 @@ export const widgetCategory: Record<WidgetType, WidgetCategory> = {
   wiggleUv1: "wiggleui",
   wigglePollen1: "wiggleui",
   wiggleAirParticles1: "wiggleui",
-  wiggleSystemStatus1: "wiggleui",
+  wiggleSystemStatusMd1: "wiggleui",
   wiggleQr1: "wiggleui",
 };
 
@@ -268,6 +268,6 @@ export const wiggleSubcategory: Partial<Record<WidgetType, WiggleSubcategory>> =
     wiggleUv1: "air-quality",
     wigglePollen1: "air-quality",
     wiggleAirParticles1: "air-quality",
-    wiggleSystemStatus1: "system",
+    wiggleSystemStatusMd1: "system",
     wiggleQr1: "utility",
   };
