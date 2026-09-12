@@ -53,4 +53,23 @@ export const widgetSettingsFields: Partial<
   wiggleClock7: timezoneFields(2),
   wiggleClock8: timezoneFields(4),
   wiggleClock9: timezoneFields(4),
+  wiggleAirQuality1: [locationField],
+  wiggleAirQualityMd1: [locationField],
+  wiggleUv1: [locationField],
+  wigglePollen1: [locationField],
+  wiggleAirParticles1: [locationField],
+  wiggleQr1: [
+    {
+      key: "mode",
+      label: "Type de contenu",
+      kind: "select",
+      options: [
+        { value: "url", label: "Lien / URL" },
+        { value: "wifi", label: "Wi-Fi" },
+      ],
+    },
+    { key: "url", label: "URL", kind: "text" },
+    { key: "wifiSsid", label: "Nom du réseau (SSID)", kind: "text" },
+    { key: "wifiPassword", label: "Mot de passe Wi-Fi", kind: "text" },
+  ],
 };

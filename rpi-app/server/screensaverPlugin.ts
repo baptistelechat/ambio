@@ -1,5 +1,6 @@
 import type { IncomingMessage } from "node:http";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import type { Duplex } from "node:stream";
 import ical, { type VEvent } from "node-ical";
@@ -62,6 +63,18 @@ const isSafeFetchUrl = (rawUrl: string): boolean => {
     return ["http:", "https:"].includes(new URL(rawUrl).protocol);
   } catch {
     return false;
+  }
+};
+
+const CPU_THERMAL_ZONE_PATH = "/sys/class/thermal/thermal_zone0/temp";
+
+const readCpuTempC = (): number | null => {
+  try {
+    const raw = fs.readFileSync(CPU_THERMAL_ZONE_PATH, "utf-8");
+    return parseInt(raw, 10) / 1000;
+  } catch {
+    // Absent hors Linux/RPi (ex: dev sur Windows) — pas une erreur.
+    return null;
   }
 };
 
@@ -186,6 +199,17 @@ const setupApi = (
           }),
         );
       }
+      return;
+    }
+
+    if (url.pathname === "/api/system-status" && req.method === "GET") {
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          cpuTempC: readCpuTempC(),
+          uptimeSeconds: os.uptime(),
+        }),
+      );
       return;
     }
 

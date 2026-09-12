@@ -28,7 +28,7 @@ export default function WidgetDemo() {
   ];
   const day = days[time.getDay()];
 
-  const hours = time.getHours() % 12;
+  const hours = String(time.getHours()).padStart(2, "0");
   const minutes = String(time.getMinutes()).padStart(2, "0");
 
   return (

@@ -9,6 +9,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- 8 new WigggleUI widgets: QR code (Wi-Fi network or custom URL), name day ("fête du jour"),
+  Raspberry Pi system status (CPU temperature, uptime), and a full air quality suite (AQI,
+  UV index, pollen, fine particles, plus a combined view showing all four at once)
+- Widget picker now groups WigggleUI widgets into sub-categories (Clocks, Calendars, Weather,
+  Air quality, System, Utilities) instead of one long list
 - Raspberry Pi screensaver server and Android app: a drag-and-drop editor (weather, clock,
   quote-of-the-day, and agenda widgets) with a fullscreen render page kept in sync live,
   loaded fullscreen on the TV through an Android DreamService
@@ -25,6 +30,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- Digital clock widgets (minimalist, digital, clock+day) showed 12-hour time instead of
+  24-hour
+- Detailed weather widget: wind/feels-like and precipitation/humidity values could end up
+  misaligned depending on their text width
 - Screensaver now renders fullscreen and at the correct scale on the TV (it used to show
   at half width / wrong viewport size)
 - The "Publish" button could be pushed off-screen and unreachable in the mobile settings

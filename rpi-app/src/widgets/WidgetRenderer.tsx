@@ -20,6 +20,14 @@ import WiggleWeather8 from "@/components/wigggle/weather-08";
 import WiggleWeather9 from "@/components/wigggle/weather-09";
 import WiggleWeatherMd1 from "@/components/wigggle/weather-md-01";
 import WiggleWeatherMd2 from "@/components/wigggle/weather-md-02";
+import WiggleQr1 from "@/components/wigggle/qr-01";
+import WiggleNameday1 from "@/components/wigggle/nameday-01";
+import WiggleAirQuality1 from "@/components/wigggle/air-quality-01";
+import WiggleAirQualityMd1 from "@/components/wigggle/air-quality-md-01";
+import WiggleSystemStatus1 from "@/components/wigggle/system-status-01";
+import WiggleUv1 from "@/components/wigggle/uv-01";
+import WigglePollen1 from "@/components/wigggle/pollen-01";
+import WiggleAirParticles1 from "@/components/wigggle/air-particles-01";
 
 export const WidgetRenderer = ({ widget }: { widget: Widget }) => {
   switch (widget.type) {
@@ -65,5 +73,21 @@ export const WidgetRenderer = ({ widget }: { widget: Widget }) => {
       return <WiggleWeatherMd1 settings={widget.settings} />;
     case "wiggleWeatherMd2":
       return <WiggleWeatherMd2 settings={widget.settings} />;
+    case "wiggleQr1":
+      return <WiggleQr1 settings={widget.settings} />;
+    case "wiggleNameday1":
+      return <WiggleNameday1 />;
+    case "wiggleAirQuality1":
+      return <WiggleAirQuality1 settings={widget.settings} />;
+    case "wiggleAirQualityMd1":
+      return <WiggleAirQualityMd1 settings={widget.settings} />;
+    case "wiggleSystemStatus1":
+      return <WiggleSystemStatus1 />;
+    case "wiggleUv1":
+      return <WiggleUv1 settings={widget.settings} />;
+    case "wigglePollen1":
+      return <WigglePollen1 settings={widget.settings} />;
+    case "wiggleAirParticles1":
+      return <WiggleAirParticles1 settings={widget.settings} />;
   }
 };

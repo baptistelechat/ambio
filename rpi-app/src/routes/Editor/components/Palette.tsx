@@ -30,6 +30,9 @@ import {
   widgetCategory,
   widgetLabels,
   type WidgetType,
+  WIGGLE_SUBCATEGORY_ORDER,
+  wiggleSubcategory,
+  wiggleSubcategoryLabels,
 } from "@/lib/types";
 import { useEditorStore } from "@/store/editorStore";
 import { WidgetPreview } from "@/routes/Editor/components/WidgetPreview";
@@ -45,6 +48,28 @@ const CATEGORY_ICONS: Record<WidgetCategory, typeof LayoutGridIcon> = {
   classique: LayoutGridIcon,
   wiggleui: SparklesIcon,
 };
+
+const WidgetButtonGrid = ({
+  types,
+  onSelect,
+}: {
+  types: WidgetType[];
+  onSelect: (type: WidgetType) => void;
+}) => (
+  <div className="flex flex-wrap gap-2">
+    {types.map((type) => (
+      <button
+        key={type}
+        type="button"
+        className="flex w-[104px] flex-col items-center gap-1 rounded-md p-1 text-center hover:bg-accent"
+        onClick={() => onSelect(type)}
+      >
+        <WidgetPreview type={type} />
+        <span className="text-xs leading-tight">{widgetLabels[type]}</span>
+      </button>
+    ))}
+  </div>
+);
 
 interface PaletteProps {
   // ponytail: le Drawer mobile fournit déjà son propre chrome (bordure,
@@ -117,29 +142,45 @@ export const Palette = ({ bare = false }: PaletteProps) => {
               <div className="flex flex-col gap-4 pr-3">
                 {(["classique", "wiggleui"] as const).map((category) => {
                   const CategoryIcon = CATEGORY_ICONS[category];
+                  const typesInCategory = WIDGET_TYPES.filter(
+                    (type) => widgetCategory[type] === category,
+                  );
                   return (
-                    <div key={category} className="flex flex-col gap-2">
+                    <div key={category} className="flex flex-col gap-3">
                       <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                         <CategoryIcon className="size-4" />
                         {CATEGORY_TITLES[category]}
                       </p>
-                      <div className="flex flex-wrap gap-2">
-                        {WIDGET_TYPES.filter(
-                          (type) => widgetCategory[type] === category,
-                        ).map((type) => (
-                          <button
-                            key={type}
-                            type="button"
-                            className="flex w-[104px] flex-col items-center gap-1 rounded-md p-1 text-center hover:bg-accent"
-                            onClick={() => addWidget(type)}
-                          >
-                            <WidgetPreview type={type} />
-                            <span className="text-xs leading-tight">
-                              {widgetLabels[type]}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
+                      {category === "wiggleui" ? (
+                        // Sous-groupée par thème (horloges, météo, qualité de
+                        // l'air…) — trop de widgets pour rester lisible en
+                        // une seule liste plate.
+                        WIGGLE_SUBCATEGORY_ORDER.map((subcategory) => {
+                          const types = typesInCategory.filter(
+                            (type) => wiggleSubcategory[type] === subcategory,
+                          );
+                          if (types.length === 0) return null;
+                          return (
+                            <div
+                              key={subcategory}
+                              className="flex flex-col gap-2"
+                            >
+                              <p className="pl-1 text-xs font-medium text-muted-foreground/70">
+                                {wiggleSubcategoryLabels[subcategory]}
+                              </p>
+                              <WidgetButtonGrid
+                                types={types}
+                                onSelect={addWidget}
+                              />
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <WidgetButtonGrid
+                          types={typesInCategory}
+                          onSelect={addWidget}
+                        />
+                      )}
                     </div>
                   );
                 })}

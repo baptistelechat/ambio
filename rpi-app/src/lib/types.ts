@@ -5,6 +5,7 @@ export const widgetTypeSchema = z.enum([
   "clock",
   "quote",
   "agenda",
+  // Horloges
   "wiggleClock1",
   "wiggleClock2",
   "wiggleClock3",
@@ -13,15 +14,28 @@ export const widgetTypeSchema = z.enum([
   "wiggleClock7",
   "wiggleClock8",
   "wiggleClock9",
+  // Calendriers
   "wiggleCalendar1",
   "wiggleCalendar3",
   "wiggleCalendarMd1",
+  "wiggleNameday1",
+  // Météo
   "wiggleWeather1",
   "wiggleWeather6",
   "wiggleWeather8",
   "wiggleWeather9",
   "wiggleWeatherMd1",
   "wiggleWeatherMd2",
+  // Qualité de l'air
+  "wiggleAirQuality1",
+  "wiggleAirQualityMd1",
+  "wiggleUv1",
+  "wigglePollen1",
+  "wiggleAirParticles1",
+  // Système
+  "wiggleSystemStatus1",
+  // Utilitaires
+  "wiggleQr1",
 ]);
 export type WidgetType = z.infer<typeof widgetTypeSchema>;
 
@@ -106,12 +120,32 @@ export const widgetDefaults: Record<
   wiggleCalendar1: { cols: 2, rows: 2, settings: {} },
   wiggleCalendar3: { cols: 2, rows: 2, settings: {} },
   wiggleCalendarMd1: { cols: 4, rows: 2, settings: {} },
+  wiggleNameday1: { cols: 2, rows: 2, settings: {} },
   wiggleWeather1: { cols: 2, rows: 2, settings: { location: "Challans" } },
   wiggleWeather6: { cols: 2, rows: 2, settings: { location: "Challans" } },
   wiggleWeather8: { cols: 2, rows: 2, settings: { location: "Challans" } },
   wiggleWeather9: { cols: 2, rows: 2, settings: { location: "Challans" } },
   wiggleWeatherMd1: { cols: 4, rows: 2, settings: { location: "Challans" } },
   wiggleWeatherMd2: { cols: 4, rows: 2, settings: { location: "Challans" } },
+  wiggleAirQuality1: { cols: 2, rows: 2, settings: { location: "Challans" } },
+  wiggleAirQualityMd1: {
+    cols: 6,
+    rows: 1,
+    settings: { location: "Challans" },
+  },
+  wiggleUv1: { cols: 2, rows: 2, settings: { location: "Challans" } },
+  wigglePollen1: { cols: 2, rows: 2, settings: { location: "Challans" } },
+  wiggleAirParticles1: {
+    cols: 2,
+    rows: 2,
+    settings: { location: "Challans" },
+  },
+  wiggleSystemStatus1: { cols: 2, rows: 2, settings: {} },
+  wiggleQr1: {
+    cols: 2,
+    rows: 2,
+    settings: { mode: "url", url: "", wifiSsid: "", wifiPassword: "" },
+  },
 };
 
 export const widgetLabels: Record<WidgetType, string> = {
@@ -130,12 +164,20 @@ export const widgetLabels: Record<WidgetType, string> = {
   wiggleCalendar1: "Carte date",
   wiggleCalendar3: "Mini calendrier mensuel",
   wiggleCalendarMd1: "Calendrier mensuel",
+  wiggleNameday1: "Fête du jour",
   wiggleWeather1: "Météo compacte",
   wiggleWeather6: "Météo + heure",
   wiggleWeather8: "Météo min/max",
   wiggleWeather9: "Prévisions 4 jours",
   wiggleWeatherMd1: "Météo détaillée",
   wiggleWeatherMd2: "Météo horaire",
+  wiggleAirQuality1: "Qualité de l'air",
+  wiggleAirQualityMd1: "Qualité de l'air détaillée",
+  wiggleUv1: "Indice UV",
+  wigglePollen1: "Pollen",
+  wiggleAirParticles1: "Particules fines",
+  wiggleSystemStatus1: "Statut Raspberry Pi",
+  wiggleQr1: "QR code",
 };
 
 export type WidgetCategory = "classique" | "wiggleui";
@@ -156,10 +198,76 @@ export const widgetCategory: Record<WidgetType, WidgetCategory> = {
   wiggleCalendar1: "wiggleui",
   wiggleCalendar3: "wiggleui",
   wiggleCalendarMd1: "wiggleui",
+  wiggleNameday1: "wiggleui",
   wiggleWeather1: "wiggleui",
   wiggleWeather6: "wiggleui",
   wiggleWeather8: "wiggleui",
   wiggleWeather9: "wiggleui",
   wiggleWeatherMd1: "wiggleui",
   wiggleWeatherMd2: "wiggleui",
+  wiggleAirQuality1: "wiggleui",
+  wiggleAirQualityMd1: "wiggleui",
+  wiggleUv1: "wiggleui",
+  wigglePollen1: "wiggleui",
+  wiggleAirParticles1: "wiggleui",
+  wiggleSystemStatus1: "wiggleui",
+  wiggleQr1: "wiggleui",
 };
+
+// Sous-catégorie d'affichage dans la palette de l'éditeur, uniquement pour
+// "wiggleui" (le nombre de widgets y justifie un regroupement plus fin que
+// "classique", qui reste une poignée d'entrées).
+export type WiggleSubcategory =
+  | "clock"
+  | "calendar"
+  | "weather"
+  | "air-quality"
+  | "system"
+  | "utility";
+
+export const WIGGLE_SUBCATEGORY_ORDER: WiggleSubcategory[] = [
+  "clock",
+  "calendar",
+  "weather",
+  "air-quality",
+  "system",
+  "utility",
+];
+
+export const wiggleSubcategoryLabels: Record<WiggleSubcategory, string> = {
+  clock: "Horloges",
+  calendar: "Calendriers",
+  weather: "Météo",
+  "air-quality": "Qualité de l'air",
+  system: "Système",
+  utility: "Utilitaires",
+};
+
+export const wiggleSubcategory: Partial<Record<WidgetType, WiggleSubcategory>> =
+  {
+    wiggleClock1: "clock",
+    wiggleClock2: "clock",
+    wiggleClock3: "clock",
+    wiggleClock4: "clock",
+    wiggleClock5: "clock",
+    wiggleClock7: "clock",
+    wiggleClock8: "clock",
+    wiggleClock9: "clock",
+    wiggleCalendar1: "calendar",
+    wiggleCalendar3: "calendar",
+    wiggleCalendarMd1: "calendar",
+    wiggleNameday1: "calendar",
+    wiggleWeather1: "weather",
+    wiggleWeather6: "weather",
+    wiggleWeather8: "weather",
+    wiggleWeather9: "weather",
+    wiggleWeatherMd1: "weather",
+    wiggleWeatherMd2: "weather",
+    wiggleAirQuality1: "air-quality",
+    wiggleAirQualityMd1: "air-quality",
+    wiggleUv1: "air-quality",
+    wigglePollen1: "air-quality",
+    wiggleAirParticles1: "air-quality",
+    wiggleSystemStatus1: "system",
+    wiggleQr1: "utility",
+  };
