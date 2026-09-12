@@ -8,9 +8,14 @@ import { SettingsPanel } from "@/routes/Editor/components/SettingsPanel";
 import { useEditorStore } from "@/store/editorStore";
 
 // ponytail: fractions de hauteur d'écran pour le tiroir vaul — 0.08 ne
-// montre que la poignée (aperçu plein écran derrière), 0.9 ouvre le menu.
+// montre que la poignée (aperçu plein écran derrière). OPEN_SNAP est à 1
+// (plein écran) et pas à 0.9 comme on pourrait s'y attendre : le contenu
+// fixe du tiroir (titre, onglets, séparateur, bouton Publier — tout ce qui
+// n'est PAS dans une ScrollArea) dépasse la portion masquée par un snap à
+// 90%, ce qui poussait "Publier" en dehors de la zone visible en
+// permanence, peu importe le contenu scrollable à l'intérieur.
 const PEEK_SNAP = 0.08;
-const OPEN_SNAP = 0.9;
+const OPEN_SNAP = 1;
 
 export const Editor = () => {
   const load = useEditorStore((s) => s.load);

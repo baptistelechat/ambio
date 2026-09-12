@@ -1,6 +1,8 @@
 import { useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { Rnd } from "react-rnd";
 import { Background } from "@/components/Background";
+import { GridOverlay } from "@/components/GridOverlay";
+import { gridToPixels, snapToGrid } from "@/lib/gridMath";
 import { useContainerScale } from "@/routes/Editor/hooks/useContainerScale";
 import { useEditorStore } from "@/store/editorStore";
 import {
@@ -8,10 +10,7 @@ import {
   CANVAS_WIDTH,
   CELL_HEIGHT,
   CELL_WIDTH,
-  GRID_COLS,
   GRID_GAP,
-  GRID_PADDING,
-  GRID_ROWS,
   type Widget,
   widgetDefaults,
 } from "@/lib/types";
@@ -34,13 +33,14 @@ const GridWidget = ({
   const rndRef = useRef<Rnd>(null);
   const draggedRef = useRef(false);
   const { cols, rows } = widgetDefaults[widget.type];
+  const { left, top } = gridToPixels(widget.col, widget.row);
 
   return (
     <Rnd
       ref={rndRef}
       default={{
-        x: GRID_PADDING + widget.col * CELL_WIDTH + GRID_GAP / 2,
-        y: GRID_PADDING + widget.row * CELL_HEIGHT + GRID_GAP / 2,
+        x: left,
+        y: top,
         width: cols * CELL_WIDTH - GRID_GAP,
         height: rows * CELL_HEIGHT - GRID_GAP,
       }}
@@ -61,22 +61,13 @@ const GridWidget = ({
         draggedRef.current = true;
       }}
       onDragStop={(_e, d) => {
-        const col = Math.min(
-          Math.max(Math.round((d.x - GRID_PADDING) / CELL_WIDTH), 0),
-          GRID_COLS - cols,
-        );
-        const row = Math.min(
-          Math.max(Math.round((d.y - GRID_PADDING) / CELL_HEIGHT), 0),
-          GRID_ROWS - rows,
-        );
+        const { col, row } = snapToGrid(d.x, d.y, cols, rows);
+        const snapped = gridToPixels(col, row);
         // Le snap "live" de react-rnd (dragGrid) dérive facilement quand un
         // `scale` est appliqué au parent — on ignore sa position et on force
         // la case de grille calculée nous-mêmes via l'API impérative du ref,
         // sans passer par des props contrôlées (voir CLAUDE.md).
-        rndRef.current?.updatePosition({
-          x: GRID_PADDING + col * CELL_WIDTH + GRID_GAP / 2,
-          y: GRID_PADDING + row * CELL_HEIGHT + GRID_GAP / 2,
-        });
+        rndRef.current?.updatePosition({ x: snapped.left, y: snapped.top });
         onMove(col, row);
       }}
       className={cn(
@@ -117,25 +108,7 @@ export const Canvas = () => {
       >
         <Background background={config.background} />
 
-        {showGrid && (
-          <div
-            className="pointer-events-none absolute"
-            style={{
-              inset: GRID_PADDING,
-              // Traits à 3px (espace canvas non mis à l'échelle) pour rester
-              // visibles une fois réduits par le `transform: scale()` du
-              // conteneur — à 1px ils disparaissent en sous-pixel.
-              backgroundImage:
-                "linear-gradient(to right, rgba(255,255,255,0.8) 3px, transparent 3px), linear-gradient(to bottom, rgba(255,255,255,0.8) 3px, transparent 3px)",
-              backgroundSize: `${CELL_WIDTH}px ${CELL_HEIGHT}px`,
-              // Le motif tuilé ne dessine un trait qu'au DÉBUT de chaque
-              // cellule : la dernière colonne/ligne n'a donc jamais son trait
-              // de droite/bas. On le complète avec un box-shadow interne.
-              boxShadow:
-                "inset -3px 0 0 rgba(255,255,255,0.8), inset 0 -3px 0 rgba(255,255,255,0.8)",
-            }}
-          />
-        )}
+        {showGrid && <GridOverlay />}
 
         {config.widgets.map((widget) => (
           <GridWidget

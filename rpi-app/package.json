@@ -45,7 +45,6 @@
     "typescript": "~6.0.2",
     "vite": "^8.2.2",
     "vite-plugin-checker": "^0.14.5",
-    "vite-plugin-mkcert": "^2.1.0",
     "vite-plugin-qrcode": "^0.4.1"
   }
 }

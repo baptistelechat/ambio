@@ -19,10 +19,14 @@ project adheres to [Semantic Versioning](https://semver.org/).
   Sunset, Nebula, Ocean, Ember, Forest, Midnight, Candy) picked from a color-swatch selector
   in the editor
 - Mobile-friendly editor: on phones the canvas shows as a fullscreen, rotated live preview
-  that fills the screen edge-to-edge, with the widget picker and background settings tucked
-  into a bottom drawer you swipe up to open and down to dismiss
+  you can drag widgets on directly (previously read-only), with the widget picker and
+  background settings organized into Widget/Background tabs in a bottom drawer you swipe up
+  to open and down to dismiss
 
 ### Fixed
 
 - Screensaver now renders fullscreen and at the correct scale on the TV (it used to show
   at half width / wrong viewport size)
+- The "Publish" button could be pushed off-screen and unreachable in the mobile settings
+  drawer
+- Browser translation prompt no longer pops up on the app (page language wasn't declared)

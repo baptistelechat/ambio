@@ -3,7 +3,6 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import checker from "vite-plugin-checker";
-import mkcert from "vite-plugin-mkcert";
 import { qrcode } from "vite-plugin-qrcode";
 import { screensaverApiPlugin } from "./server/screensaverPlugin.ts";
 
@@ -14,7 +13,6 @@ export default defineConfig({
     screensaverApiPlugin(),
     checker({ typescript: true }),
     qrcode(),
-    mkcert(),
   ],
   resolve: {
     alias: {
