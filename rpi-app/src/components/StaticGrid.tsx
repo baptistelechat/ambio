@@ -1,4 +1,5 @@
 import { Background } from "@/components/Background";
+import { getWidgetCols } from "@/lib/gridMath";
 import { cn } from "@/lib/utils";
 import {
   CELL_HEIGHT,
@@ -24,7 +25,8 @@ export const StaticGrid = ({
   <>
     <Background background={config.background} />
     {config.widgets.map((widget) => {
-      const { cols, rows } = widgetDefaults[widget.type];
+      const cols = getWidgetCols(widget);
+      const { rows } = widgetDefaults[widget.type];
       return (
         <div
           key={widget.id}

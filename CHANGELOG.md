@@ -14,6 +14,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
   suite (AQI, UV index, pollen, fine particles, plus a combined view showing all four at once)
 - News ticker widget: pick RSS feeds from a curated list of French news sources (checkboxes)
   instead of typing URLs, with an optional keyword filter
+- News ticker width is now adjustable (4 to 16 grid columns) via a slider in its settings
 - Widget picker now groups WigggleUI widgets into sub-categories (Clocks, Calendars, Weather,
   Air quality, System, Utilities) instead of one long list
 - Raspberry Pi screensaver server and Android app: a drag-and-drop editor (weather, clock,
@@ -30,8 +31,24 @@ project adheres to [Semantic Versioning](https://semver.org/).
   background settings organized into Widget/Background tabs in a bottom drawer you swipe up
   to open and down to dismiss
 
+### Changed
+
+- Desktop editor: removed the "Éditeur d'écran de veille" title and reduced the side
+  margins so the canvas preview is bigger (settings panel width unchanged)
+- News ticker widget moved into the WiggleUI section of the widget picker (new
+  "Actualités" sub-category) to match its visual style, with larger text for readability
+
 ### Fixed
 
+- The TV's "activate screensaver now" action could silently fail to launch Ambio
+  (blocked by a TCL auto-start restriction) — this is now reasserted automatically
+  after app updates and TV reboots
+- Widgets wider than their default size (e.g. a resized news ticker) weren't rendered
+  at the configured width outside the editor (actual screensaver / mobile preview)
+- Widening the news ticker could shift it sideways instead of only extending to the
+  right
+- Duplicate headlines could appear twice in the news ticker when the same story was
+  syndicated across multiple feeds
 - Digital clock widgets (minimalist, digital, clock+day) showed 12-hour time instead of
   24-hour
 - Detailed weather widget: wind/feels-like and precipitation/humidity values could end up

@@ -2,7 +2,7 @@ import { useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { Rnd } from "react-rnd";
 import { Background } from "@/components/Background";
 import { GridOverlay } from "@/components/GridOverlay";
-import { gridToPixels, snapToGrid } from "@/lib/gridMath";
+import { getWidgetCols, gridToPixels, snapToGrid } from "@/lib/gridMath";
 import { useContainerScale } from "@/routes/Editor/hooks/useContainerScale";
 import { useEditorStore } from "@/store/editorStore";
 import {
@@ -32,7 +32,8 @@ const GridWidget = ({
 }) => {
   const rndRef = useRef<Rnd>(null);
   const draggedRef = useRef(false);
-  const { cols, rows } = widgetDefaults[widget.type];
+  const cols = getWidgetCols(widget);
+  const { rows } = widgetDefaults[widget.type];
   const { left, top } = gridToPixels(widget.col, widget.row);
 
   return (
@@ -112,7 +113,11 @@ export const Canvas = () => {
 
         {config.widgets.map((widget) => (
           <GridWidget
-            key={widget.id}
+            // Un changement de largeur (settings.width) doit forcer un
+            // remount : react-rnd est volontairement non contrôlé (voir
+            // CLAUDE.md), donc son `default={{width}}` initial n'est
+            // relu qu'à la (re)création du composant.
+            key={`${widget.id}:${getWidgetCols(widget)}`}
             widget={widget}
             scale={scale}
             selected={selectedWidgetId === widget.id}

@@ -5,6 +5,7 @@ export const widgetTypeSchema = z.enum([
   "clock",
   "quote",
   "agenda",
+  "newsTicker",
   // Horloges
   "wiggleClock1",
   "wiggleClock2",
@@ -87,6 +88,14 @@ export const widgetDefaults: Record<
   clock: { cols: 3, rows: 2, settings: {} },
   quote: { cols: 5, rows: 1, settings: {} },
   agenda: { cols: 4, rows: 3, settings: { icsUrl: "" } },
+  // "width" pilote dynamiquement le nombre de colonnes de ce widget
+  // (4 à 16, voir widgetSettingsFields) — Canvas le lit en priorité sur
+  // ce "cols" par défaut, qui ne sert que de valeur initiale à la pose.
+  newsTicker: {
+    cols: 8,
+    rows: 1,
+    settings: { feeds: [], topics: [], width: 8 },
+  },
   wiggleClock1: { cols: 2, rows: 2, settings: {} },
   wiggleClock2: { cols: 2, rows: 2, settings: {} },
   wiggleClock3: { cols: 2, rows: 2, settings: {} },
@@ -153,6 +162,7 @@ export const widgetLabels: Record<WidgetType, string> = {
   clock: "Heure / Date",
   quote: "Proverbe du jour",
   agenda: "Agenda",
+  newsTicker: "Bandeau d'actualités",
   wiggleClock1: "Horloge minimaliste",
   wiggleClock2: "Horloge digitale",
   wiggleClock3: "Horloge + jour",
@@ -187,6 +197,7 @@ export const widgetCategory: Record<WidgetType, WidgetCategory> = {
   clock: "classique",
   quote: "classique",
   agenda: "classique",
+  newsTicker: "wiggleui",
   wiggleClock1: "wiggleui",
   wiggleClock2: "wiggleui",
   wiggleClock3: "wiggleui",
@@ -222,6 +233,7 @@ export type WiggleSubcategory =
   | "calendar"
   | "weather"
   | "air-quality"
+  | "news"
   | "system"
   | "utility";
 
@@ -230,6 +242,7 @@ export const WIGGLE_SUBCATEGORY_ORDER: WiggleSubcategory[] = [
   "calendar",
   "weather",
   "air-quality",
+  "news",
   "system",
   "utility",
 ];
@@ -239,6 +252,7 @@ export const wiggleSubcategoryLabels: Record<WiggleSubcategory, string> = {
   calendar: "Calendriers",
   weather: "Météo",
   "air-quality": "Qualité de l'air",
+  news: "Actualités",
   system: "Système",
   utility: "Utilitaires",
 };
@@ -268,6 +282,7 @@ export const wiggleSubcategory: Partial<Record<WidgetType, WiggleSubcategory>> =
     wiggleUv1: "air-quality",
     wigglePollen1: "air-quality",
     wiggleAirParticles1: "air-quality",
+    newsTicker: "news",
     wiggleSystemStatusMd1: "system",
     wiggleQr1: "utility",
   };

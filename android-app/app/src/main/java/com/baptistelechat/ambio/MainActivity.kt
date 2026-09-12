@@ -10,6 +10,11 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Filet de sécurité : réassigne Ambio comme écran de veille à chaque
+        // ouverture de l'app, au cas où le réglage système ait été perdu
+        // (redémarrage TV, réinstallation) — voir DreamRegistrar.
+        DreamRegistrar.register(this)
+
         val daydreamSettings = Intent().apply {
             component = ComponentName(
                 "com.android.tv.settings",

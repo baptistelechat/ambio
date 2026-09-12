@@ -1,7 +1,7 @@
 import { useRef, type PointerEvent as ReactPointerEvent } from "react";
 import { Background } from "@/components/Background";
 import { GridOverlay } from "@/components/GridOverlay";
-import { gridToPixels, snapToGrid } from "@/lib/gridMath";
+import { getWidgetCols, gridToPixels, snapToGrid } from "@/lib/gridMath";
 import {
   CELL_HEIGHT,
   CELL_WIDTH,
@@ -43,7 +43,8 @@ const RotatedGridWidget = ({
   const elRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
 
-  const { cols, rows } = widgetDefaults[widget.type];
+  const cols = getWidgetCols(widget);
+  const { rows } = widgetDefaults[widget.type];
   const { left, top } = gridToPixels(widget.col, widget.row);
   const width = cols * CELL_WIDTH - GRID_GAP;
   const height = rows * CELL_HEIGHT - GRID_GAP;

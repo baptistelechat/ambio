@@ -1,3 +1,4 @@
+import { NEWS_FEED_CATALOG, NEWS_TOPIC_CATALOG } from "@/lib/newsFeeds";
 import type { WidgetType } from "@/lib/types";
 
 export type SettingsField =
@@ -7,6 +8,20 @@ export type SettingsField =
       label: string;
       kind: "select";
       options: { value: string; label: string }[];
+    }
+  | {
+      key: string;
+      label: string;
+      kind: "checklist";
+      options: { value: string; label: string; group?: string }[];
+    }
+  | {
+      key: string;
+      label: string;
+      kind: "range";
+      min: number;
+      max: number;
+      step?: number;
     };
 
 export const TIMEZONE_OPTIONS = [
@@ -44,6 +59,34 @@ export const widgetSettingsFields: Partial<
 > = {
   weather: [locationField],
   agenda: [{ key: "icsUrl", label: "URL du calendrier (.ics)", kind: "text" }],
+  newsTicker: [
+    {
+      key: "width",
+      label: "Largeur (colonnes)",
+      kind: "range",
+      min: 4,
+      max: 16,
+    },
+    {
+      key: "feeds",
+      label: "Flux RSS",
+      kind: "checklist",
+      options: NEWS_FEED_CATALOG.map((feed) => ({
+        value: feed.id,
+        label: feed.label,
+        group: feed.category,
+      })),
+    },
+    {
+      key: "topics",
+      label: "Thèmes (optionnel, filtre les titres)",
+      kind: "checklist",
+      options: NEWS_TOPIC_CATALOG.map((topic) => ({
+        value: topic.id,
+        label: topic.label,
+      })),
+    },
+  ],
   wiggleWeather1: [locationField],
   wiggleWeather6: [locationField],
   wiggleWeather8: [locationField],

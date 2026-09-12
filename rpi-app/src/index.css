@@ -79,3 +79,15 @@
     margin: 0;
   }
 }
+
+@keyframes ambio-news-marquee {
+  from {
+    /* translate3d plutôt que translateX : force la promotion sur une
+       couche composite GPU sur les WebView bas de gamme (TV Android) où
+       translateX seul peut rester peint au CPU et saccader. */
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}

@@ -48,8 +48,7 @@ export const Editor = () => {
       )}
 
       {/* Desktop : édition classique côte à côte, drag de position inclus */}
-      <div className="mx-auto hidden h-dvh max-w-6xl flex-col gap-4 p-6 md:flex md:overflow-hidden">
-        <h1 className="text-xl font-semibold">Éditeur d'écran de veille</h1>
+      <div className="hidden h-dvh w-full flex-col gap-4 p-4 md:flex md:overflow-hidden">
         <div className="flex flex-1 items-start gap-4 overflow-hidden">
           <Canvas />
           <div className="flex h-full w-72 shrink-0">

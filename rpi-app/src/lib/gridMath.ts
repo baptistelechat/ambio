@@ -5,7 +5,19 @@ import {
   GRID_GAP,
   GRID_PADDING,
   GRID_ROWS,
+  type Widget,
+  widgetDefaults,
 } from "@/lib/types";
+
+// Certains widgets (ex: bandeau d'actualités) pilotent leur largeur en
+// colonnes depuis un réglage d'instance plutôt que la taille fixe par
+// type — ce helper centralise la résolution pour Canvas et sa clé React.
+export const getWidgetCols = (widget: Widget): number => {
+  const override = Number(widget.settings.width);
+  return Number.isFinite(override) && override > 0
+    ? override
+    : widgetDefaults[widget.type].cols;
+};
 
 export const snapToGrid = (
   x: number,

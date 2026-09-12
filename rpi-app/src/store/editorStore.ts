@@ -4,6 +4,7 @@ import {
   type Background,
   type Config,
   defaultConfig,
+  GRID_COLS,
   type Widget,
   widgetDefaults,
   type WidgetType,
@@ -76,9 +77,21 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     set((state) => ({
       config: {
         ...state.config,
-        widgets: state.config.widgets.map((w) =>
-          w.id === id ? { ...w, settings: { ...w.settings, ...settings } } : w,
-        ),
+        widgets: state.config.widgets.map((w) => {
+          if (w.id !== id) return w;
+          const merged = { ...w.settings, ...settings };
+          // Un widget dont la largeur est pilotée par settings.width (ex:
+          // bandeau d'actualités) peut déborder de la grille si on l'élargit
+          // trop — on plafonne la largeur à la place disponible à partir de
+          // sa colonne actuelle plutôt que de déplacer le widget (déplacer
+          // col donnait l'impression que le widget "partait vers la gauche"
+          // en agrandissant).
+          const width = Number(merged.width);
+          if (Number.isFinite(width) && width > 0) {
+            merged.width = Math.min(width, GRID_COLS - w.col);
+          }
+          return { ...w, settings: merged };
+        }),
       },
     }));
   },

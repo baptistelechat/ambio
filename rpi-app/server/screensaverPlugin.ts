@@ -4,8 +4,10 @@ import os from "node:os";
 import path from "node:path";
 import type { Duplex } from "node:stream";
 import ical, { type VEvent } from "node-ical";
+import Parser from "rss-parser";
 import type { Connect, Plugin } from "vite";
 import { WebSocketServer } from "ws";
+import { NEWS_FEED_CATALOG, NEWS_TOPIC_CATALOG } from "../src/lib/newsFeeds.ts";
 import { configSchema, defaultConfig } from "../src/lib/types.ts";
 import { normalizeConfig } from "../src/lib/configMigration.ts";
 
@@ -66,6 +68,32 @@ const isSafeFetchUrl = (rawUrl: string): boolean => {
   }
 };
 
+type NewsApiItem = {
+  title: string;
+  link: string;
+  source: string;
+  pubDate: string;
+};
+
+const MAX_NEWS_FEEDS = 8;
+const MAX_NEWS_TOPICS = 20;
+const MAX_NEWS_ITEMS_PER_FEED = 15;
+const MAX_NEWS_ITEMS = 30;
+const rssParser = new Parser({ timeout: 8000 });
+
+const parseJsonStringArray = (value: string | null, max: number): string[] => {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((v): v is string => typeof v === "string" && v.trim() !== "")
+      .slice(0, max);
+  } catch {
+    return [];
+  }
+};
+
 const CPU_THERMAL_ZONE_PATH = "/sys/class/thermal/thermal_zone0/temp";
 
 const readCpuTempC = (): number | null => {
@@ -80,6 +108,63 @@ const readCpuTempC = (): number | null => {
 
 const readRamUsedPercent = (): number =>
   Math.round(((os.totalmem() - os.freemem()) / os.totalmem()) * 100);
+
+const fetchNewsItems = async (
+  feedIds: string[],
+  topicIds: string[],
+): Promise<NewsApiItem[]> => {
+  const feedIdSet = new Set(feedIds);
+  const topicIdSet = new Set(topicIds);
+  const feeds = NEWS_FEED_CATALOG.filter((feed) => feedIdSet.has(feed.id));
+  const keywords = NEWS_TOPIC_CATALOG.filter((topic) =>
+    topicIdSet.has(topic.id),
+  )
+    .flatMap((topic) => topic.keywords)
+    .map((keyword) => keyword.trim().toLowerCase());
+
+  const results = await Promise.allSettled(
+    feeds.map(async (feedSource) => {
+      const feed = await rssParser.parseURL(feedSource.url);
+      return (feed.items ?? []).slice(0, MAX_NEWS_ITEMS_PER_FEED).map(
+        (item): NewsApiItem => ({
+          title: item.title ?? "",
+          link: item.link ?? "",
+          pubDate: item.isoDate ?? item.pubDate ?? new Date().toISOString(),
+          source: feedSource.label,
+        }),
+      );
+    }),
+  );
+
+  const byLink = new Map<string, NewsApiItem>();
+  for (const item of results
+    .filter(
+      (r): r is PromiseFulfilledResult<NewsApiItem[]> =>
+        r.status === "fulfilled",
+    )
+    .flatMap((r) => r.value)
+    .filter((item) => item.title)) {
+    // Une même dépêche apparaît parfois deux fois dans un même flux
+    // (pagination/cache côté éditeur) ou sur deux flux syndiqués — sans ça,
+    // le bandeau (DOM ou texte vidéo) répète deux fois la même dépêche.
+    if (!byLink.has(item.link || item.title)) {
+      byLink.set(item.link || item.title, item);
+    }
+  }
+  let items = Array.from(byLink.values());
+
+  if (keywords.length > 0) {
+    items = items.filter((item) =>
+      keywords.some((keyword) => item.title.toLowerCase().includes(keyword)),
+    );
+  }
+
+  return items
+    .sort(
+      (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime(),
+    )
+    .slice(0, MAX_NEWS_ITEMS);
+};
 
 const setupApi = (
   middlewares: Connect.Server,
@@ -193,6 +278,35 @@ const setupApi = (
           .map((e) => ({ title: e.summary, start: e.start, end: e.end }));
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify(upcoming));
+      } catch (err) {
+        res.statusCode = 502;
+        res.end(
+          JSON.stringify({
+            status: "error",
+            message: (err as Error).message,
+          }),
+        );
+      }
+      return;
+    }
+
+    if (url.pathname === "/api/news" && req.method === "GET") {
+      // Les flux ne sont plus des URLs arbitraires envoyées par le client
+      // (checkboxes côté éditeur, voir NEWS_FEED_CATALOG) : on ne résout
+      // que des ids connus, ce qui ferme la porte à un proxy SSRF vers une
+      // URL choisie par l'appelant.
+      const feedIds = parseJsonStringArray(
+        url.searchParams.get("feeds"),
+        MAX_NEWS_FEEDS,
+      );
+      const topicIds = parseJsonStringArray(
+        url.searchParams.get("topics"),
+        MAX_NEWS_TOPICS,
+      );
+      try {
+        const items = await fetchNewsItems(feedIds, topicIds);
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(items));
       } catch (err) {
         res.statusCode = 502;
         res.end(
