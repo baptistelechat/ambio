@@ -1,11 +1,11 @@
 ---
-id: BLK-009
+id: ZBLK-009
 type: blocker
 date: 2026-09-07
 tags: [webgl, ogl, grainient, transform-scale, canvas]
 ---
 
-# BLK-009 — Grainient mal affiché dans le canevas scalé de l'éditeur (deux causes cumulées)
+# ZBLK-009 — Grainient mal affiché dans le canevas scalé de l'éditeur (deux causes cumulées)
 
 | Friction                                                                                                      | Cause réelle                                                                                                                                                                                                                                                                                                              | Solution                                                                                                                                                                               | Statut |
 | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
@@ -13,5 +13,5 @@ tags: [webgl, ogl, grainient, transform-scale, canvas]
 
 ## Références
 
-- [LRN-010](../learnings/LRN-010.md) — pattern réutilisable extrait de ce blocage
-- [BDR-011](../decisions/BDR-011.md) — décision d'intégrer Grainient avec des presets curés
+- [LRN-010](../../learnings/LRN-010.md) — pattern réutilisable extrait de ce blocage
+- [BDR-011](../../decisions/BDR-011.md) — décision d'intégrer Grainient avec des presets curés

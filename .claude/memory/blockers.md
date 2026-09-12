@@ -4,9 +4,7 @@ register: blockers
 
 ## Index
 
-| ID                             | Date       | Friction                                                               | Tags                                            | Statut |
-| ------------------------------ | ---------- | ---------------------------------------------------------------------- | ----------------------------------------------- | ------ |
-| [BLK-006](blockers/BLK-006.md) | 2026-09-06 | Le drag ne s'accrochait pas du tout à la grille                        | #react-rnd #scale #drag-drop #grid-snap         | résolu |
-| [BLK-007](blockers/BLK-007.md) | 2026-09-06 | Le CLI shadcn a mal installé les fichiers à chaque ajout               | #shadcn #cli #windows #radix #base-ui           | résolu |
-| [BLK-008](blockers/BLK-008.md) | 2026-09-06 | Les traits de la grille sont restés invisibles sur plusieurs essais    | #css #grid #transform-scale #linear-gradient    | résolu |
-| [BLK-009](blockers/BLK-009.md) | 2026-09-07 | Grainient mal affiché dans le canevas scalé de l'éditeur (deux causes) | #webgl #ogl #grainient #transform-scale #canvas | résolu |
+| ID                             | Date       | Friction                                                            | Tags                                                 | Statut |
+| ------------------------------ | ---------- | ------------------------------------------------------------------- | ---------------------------------------------------- | ------ |
+| [BLK-014](blockers/BLK-014.md) | 2026-09-12 | Bandeau d'actualités reste saccadé malgré 3 approches               | #android #webview #performance #animation #jank #tv  | ouvert |
+| [BLK-015](blockers/BLK-015.md) | 2026-09-12 | Écran de veille ne se lançait pas systématiquement via le bouton TV | #android #dreamservice #appops #tcl #oem-restriction | résolu |

@@ -1,11 +1,11 @@
 ---
-id: BLK-008
+id: ZBLK-008
 type: blocker
 date: 2026-09-06
 tags: [css, grid, transform-scale, linear-gradient]
 ---
 
-# BLK-008 — Les traits de la grille sont restés invisibles sur plusieurs essais
+# ZBLK-008 — Les traits de la grille sont restés invisibles sur plusieurs essais
 
 | Friction                                                                                                                                                                                                                                                                                | Cause réelle                                                                                                                                                                                                       | Solution                                                                                                        | Statut |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | ------ |
@@ -13,5 +13,5 @@ tags: [css, grid, transform-scale, linear-gradient]
 
 ## Références
 
-- [LRN-007](../learnings/LRN-007.md) — pattern du trait de bord manquant
-- [LRN-008](../learnings/LRN-008.md) — pattern du trait sous-pixel sous `scale()`
+- [LRN-007](../../learnings/LRN-007.md) — pattern du trait de bord manquant
+- [LRN-008](../../learnings/LRN-008.md) — pattern du trait sous-pixel sous `scale()`

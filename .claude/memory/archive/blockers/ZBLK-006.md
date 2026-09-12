@@ -1,11 +1,11 @@
 ---
-id: BLK-006
+id: ZBLK-006
 type: blocker
 date: 2026-09-06
 tags: [react-rnd, scale, drag-drop, grid-snap]
 ---
 
-# BLK-006 — Le drag ne s'accrochait pas du tout à la grille
+# ZBLK-006 — Le drag ne s'accrochait pas du tout à la grille
 
 | Friction                                                                                                                                                                                                                                                                        | Cause réelle                                                                                                                                                                     | Solution                                                                                                                                                               | Statut |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
@@ -13,5 +13,5 @@ tags: [react-rnd, scale, drag-drop, grid-snap]
 
 ## Références
 
-- [LRN-006](../learnings/LRN-006.md) — pattern généralisé depuis ce blocage
-- [BDR-007](../decisions/BDR-007.md) — décision produit qui a introduit ce besoin de grille
+- [LRN-006](../../learnings/LRN-006.md) — pattern généralisé depuis ce blocage
+- [BDR-007](../../decisions/BDR-007.md) — décision produit qui a introduit ce besoin de grille
