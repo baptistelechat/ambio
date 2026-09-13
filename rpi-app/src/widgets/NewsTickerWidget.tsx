@@ -1,19 +1,16 @@
 import { NewspaperIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Widget, WidgetContent } from "@/components/ui/widget";
 import { useNewsFeed } from "@/hooks/useNewsFeed";
 
-const SCROLL_SPEED_PX_PER_SEC = 70;
-const MIN_DURATION_SEC = 8;
-// Le track anime une bande dupliquée en continu — sa largeur (donc la
-// mémoire GPU à recomposer à chaque frame) grandit avec le nombre
-// d'items. Sur un GPU de TV bas de gamme (peu de bande passante mémoire),
-// une bande de plusieurs milliers de px saccade même en layer composité ;
-// mesuré via `dumpsys gfxinfo` (86% de frames "janky", pics à 200ms) sur
-// une TCL avec les ~15 items renvoyés par un seul flux. On plafonne donc
-// l'affichage, indépendamment du nombre d'items agrégés côté serveur.
+// ponytail: le défilement continu (scroll marquee) sature à ~5fps sur la TV
+// TCL cible quel que soit le nombre d'items ou les hints GPU — voir BLK-014.
+// Un swap périodique avec fade court (pas d'animation soutenue) contourne le
+// problème sans jamais l'avoir résolu.
 const MAX_DISPLAYED_ITEMS = 10;
+const ROTATE_INTERVAL_MS = 8000;
+const FADE_MS = 250;
 
 export const NewsTickerWidget = ({
   settings,
@@ -29,20 +26,30 @@ export const NewsTickerWidget = ({
   const { items: fetchedItems, isLoading } = useNewsFeed(feeds, topics);
   const items = fetchedItems.slice(0, MAX_DISPLAYED_ITEMS);
 
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [duration, setDuration] = useState(MIN_DURATION_SEC);
+  const [prevItemsLength, setPrevItemsLength] = useState(items.length);
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  if (items.length !== prevItemsLength) {
+    setPrevItemsLength(items.length);
+    setIndex(0);
+  }
 
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    // Le track contient 2 copies des items bout à bout — la moitié de sa
-    // largeur correspond donc à une seule copie, la distance parcourue
-    // par la boucle -50% du keyframe (voir index.css).
-    const singleCopyWidth = track.scrollWidth / 2;
-    setDuration(
-      Math.max(singleCopyWidth / SCROLL_SPEED_PX_PER_SEC, MIN_DURATION_SEC),
-    );
-  }, [items]);
+    if (items.length <= 1) return;
+    let fadeTimeout: ReturnType<typeof setTimeout>;
+    const interval = setInterval(() => {
+      setVisible(false);
+      fadeTimeout = setTimeout(() => {
+        setIndex((i) => (i + 1) % items.length);
+        setVisible(true);
+      }, FADE_MS);
+    }, ROTATE_INTERVAL_MS);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(fadeTimeout);
+    };
+  }, [items.length]);
 
   if (feeds.length === 0) {
     return (
@@ -68,35 +75,18 @@ export const NewsTickerWidget = ({
             {isLoading ? "Chargement…" : "Aucune actualité disponible"}
           </Label>
         ) : (
-          <div
-            ref={trackRef}
-            className="flex w-max items-center whitespace-nowrap"
+          <span
+            className="line-clamp-2 px-4 text-2xl whitespace-normal transition-opacity"
             style={{
-              animation: `ambio-news-marquee ${duration}s linear infinite`,
-              // Promeut le track sur sa propre couche composite avant même
-              // le premier frame — sur un WebView bas de gamme (TV Android),
-              // laisser le navigateur découvrir l'animation au vol provoque
-              // un à-coup visible en début (et parfois tout du long).
-              willChange: "transform",
+              opacity: visible ? 1 : 0,
+              transitionDuration: `${FADE_MS}ms`,
             }}
           >
-            {[0, 1].map((copy) => (
-              <div key={copy} className="flex items-center">
-                {items.map((item, index) => (
-                  <span
-                    key={`${copy}-${item.link || index}`}
-                    className="px-4 text-2xl"
-                  >
-                    <span className="mr-3 font-semibold text-muted-foreground">
-                      {item.source}
-                    </span>
-                    {item.title}
-                    <span className="ml-4 text-muted-foreground/50">•</span>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
+            <span className="mr-3 font-semibold text-muted-foreground">
+              {items[index].source}
+            </span>
+            {items[index].title}
+          </span>
         )}
       </WidgetContent>
     </Widget>

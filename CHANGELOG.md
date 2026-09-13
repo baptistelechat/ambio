@@ -37,6 +37,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
   margins so the canvas preview is bigger (settings panel width unchanged)
 - News ticker widget moved into the WiggleUI section of the widget picker (new
   "Actualités" sub-category) to match its visual style, with larger text for readability
+- News ticker no longer scrolls continuously (it was choppy on the TV) — it now shows
+  one headline at a time, up to two lines, fading to the next every few seconds
 
 ### Fixed
 
