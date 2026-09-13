@@ -155,3 +155,20 @@ Session close : `react-doctor --scope changed` a remonté 2 vrais bugs sur `News
 - [BDR-023](decisions/BDR-023.md) — Bandeau d'actualités : swap périodique plutôt que scroll continu
 - [LRN-022](learnings/LRN-022.md) — Ajuster un state dérivé d'une prop pendant le render, pas via useEffect
 - [LRN-023](learnings/LRN-023.md) — Un setTimeout imbriqué dans un setInterval doit être nettoyé séparément
+
+---
+
+Baptiste a signalé 4 problèmes distincts sur les widgets WigggleUI : le widget météo horaire affichait "00hh, 01hh..." au lieu des 6 prochaines heures ; le widget fuseaux horaires affichait une lune même en plein jour et la liste de fuseaux disponibles était limitée à 13 entrées codées en dur ; les champs de localisation (météo, qualité de l'air...) n'avaient aucune autocomplétion ; et le widget statut RPi affichait "—" pour la température CPU.
+
+Diagnostic du widget météo horaire : `hourly.time.slice(0, 6)` prenait les 6 premières heures de la journée (minuit→5h) au lieu des 6 prochaines depuis maintenant — corrigé en cherchant l'index de l'heure courante. En creusant la lune-en-plein-jour, découverte d'un bug plus profond que prévu : `Intl.DateTimeFormat("fr-FR", { hour: "2-digit" })` seul renvoie une chaîne décorée (`"12 h"`, pas `"12"`), donc `Number(...)` valait toujours `NaN` et la comparaison jour/nuit était systématiquement fausse, peu importe l'heure réelle — corrigé via `formatToParts()`. Le même piège existait côté affichage dans le widget météo horaire (`"hh"` doublé), corrigé avec `date.getHours()` natif. Ajout de 4 états d'icône (lever/jour/coucher/nuit) et remplacement de la liste de fuseaux hardcodée par `Intl.supportedValuesOf("timeZone")` (418 zones), regroupées par continent avec décalage UTC affiché — demande ultérieure de Baptiste de reprendre le vrai composant shadcn officiel (`SelectGroup`/`SelectLabel`, jamais exportés du wrapper `ui/select.tsx` bien que déjà fournis par `@radix-ui/react-select`).
+
+Ajout d'une autocomplétion de ville via `<datalist>` natif branché sur `geo.api.gouv.fr/communes` (pas de nouvelle dépendance, aucun combobox shadcn n'était installé). Pour la température RPi : testé en direct sur le vrai Pi via SSH (skill `rpi`), le backend fonctionnait parfaitement (sysfs + `vcgencmd` tous deux OK) — la cause exacte n'a pas pu être reproduite. Ajout d'un fallback `vcgencmd` + remplacement du `catch` silencieux par un log, mais Baptiste a signalé que le "—" persistait malgré la 1ère correction : blocker laissé ouvert, cause racine non confirmée.
+
+`react-doctor --scope changed` a remonté un warning perf (`Intl.DateTimeFormat` reconstruit à chaque tick dans `useZoneClocks`) — corrigé via un cache par fuseau (Map). Incident de clôture : mes premières écritures mémoire ont écrasé par erreur deux fichiers déjà utilisés par une session parallèle (`BDR-021`, `LRN-019`, committés entre-temps) — restaurés via `git checkout`, entrées recréées sous les bons IDs (`BDR-024`, `LRN-024`), et un learning dédié ajouté sur ce piège de collision.
+
+**Entrées clés :**
+
+- [BDR-024](decisions/BDR-024.md) — Fuseaux horaires liste complète + icônes 4 états + autocomplete ville
+- [LRN-024](learnings/LRN-024.md) — `Intl.DateTimeFormat` sans minute renvoie une chaîne décorée → `NaN`
+- [LRN-025](learnings/LRN-025.md) — Un index mémoire lu en début de session peut être périmé au moment d'écrire
+- [BLK-016](blockers/BLK-016.md) — Température CPU RPi toujours "—" en prod (ouvert)
