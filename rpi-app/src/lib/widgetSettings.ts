@@ -3,11 +3,18 @@ import type { WidgetType } from "@/lib/types";
 
 export type SettingsField =
   | { key: string; label: string; kind: "text" }
+  | { key: string; label: string; kind: "location" }
   | {
       key: string;
       label: string;
       kind: "select";
       options: { value: string; label: string }[];
+    }
+  | {
+      key: string;
+      label: string;
+      kind: "timezone";
+      groups: TimezoneGroup[];
     }
   | {
       key: string;
@@ -24,34 +31,89 @@ export type SettingsField =
       step?: number;
     };
 
-export const TIMEZONE_OPTIONS = [
-  { value: "Europe/Paris", label: "Paris" },
-  { value: "Europe/London", label: "Londres" },
-  { value: "America/New_York", label: "New York" },
-  { value: "America/Los_Angeles", label: "Los Angeles" },
-  { value: "Asia/Tokyo", label: "Tokyo" },
-  { value: "Asia/Seoul", label: "Séoul" },
-  { value: "Asia/Kolkata", label: "Bombay" },
-  { value: "Asia/Dubai", label: "Dubaï" },
-  { value: "Australia/Sydney", label: "Sydney" },
-  { value: "Pacific/Auckland", label: "Auckland" },
-  { value: "America/Sao_Paulo", label: "São Paulo" },
-  { value: "Europe/Moscow", label: "Moscou" },
-  { value: "UTC", label: "UTC" },
-];
+export interface TimezoneGroup {
+  area: string;
+  label: string;
+  options: { value: string; label: string }[];
+}
+
+// Etc/GMT+X a un signe inversé par rapport à l'UTC réel (ex: Etc/GMT+5 = UTC-5) — source de confusion, exclu.
+const AREA_LABELS: Record<string, string> = {
+  Africa: "Afrique",
+  America: "Amérique",
+  Antarctica: "Antarctique",
+  Arctic: "Arctique",
+  Asia: "Asie",
+  Atlantic: "Atlantique",
+  Australia: "Australie",
+  Europe: "Europe",
+  Indian: "Océan Indien",
+  Pacific: "Pacifique",
+  UTC: "UTC",
+};
+
+const utcOffsetMinutes = (tz: string): number => {
+  const raw = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    timeZoneName: "shortOffset",
+  })
+    .formatToParts(new Date())
+    .find((p) => p.type === "timeZoneName")?.value;
+  const match = raw?.match(/GMT([+-]\d+)(?::(\d+))?/);
+  if (!match) return 0;
+  const sign = match[1].startsWith("-") ? -1 : 1;
+  return sign * (Math.abs(Number(match[1])) * 60 + Number(match[2] ?? 0));
+};
+
+const utcOffsetLabel = (minutes: number): string => {
+  const sign = minutes >= 0 ? "+" : "-";
+  const abs = Math.abs(minutes);
+  const hours = Math.floor(abs / 60);
+  const mins = abs % 60;
+  return mins === 0
+    ? `UTC${sign}${hours}`
+    : `UTC${sign}${hours}:${String(mins).padStart(2, "0")}`;
+};
+
+// "UTC" n'est pas toujours listé par Intl.supportedValuesOf selon le moteur JS —
+// on le garantit explicitement, c'est une entrée attendue dans tout sélecteur de fuseau.
+const ALL_TIMEZONES = Array.from(
+  new Set([...Intl.supportedValuesOf("timeZone"), "UTC"]),
+);
+
+const groupedByArea = ALL_TIMEZONES.filter(
+  (tz) => !tz.startsWith("Etc/"),
+).reduce<Record<string, { value: string; label: string }[]>>((acc, tz) => {
+  const area = tz.split("/")[0];
+  const city = tz.split("/").pop()?.replace(/_/g, " ") ?? tz;
+  const offset = utcOffsetMinutes(tz);
+  (acc[area] ??= []).push({
+    value: tz,
+    label: `${city} (${utcOffsetLabel(offset)})`,
+  });
+  return acc;
+}, {});
+
+export const TIMEZONE_GROUPS: TimezoneGroup[] = Object.entries(groupedByArea)
+  .map(([area, options]) => ({
+    area,
+    label: AREA_LABELS[area] ?? area,
+    options: options.sort((a, b) => a.label.localeCompare(b.label, "fr")),
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label, "fr"));
 
 const locationField: SettingsField = {
   key: "location",
   label: "Localisation",
-  kind: "text",
+  kind: "location",
 };
 
 const timezoneFields = (count: number): SettingsField[] =>
   Array.from({ length: count }, (_, i) => ({
     key: `tz${i + 1}`,
     label: `Fuseau ${i + 1}`,
-    kind: "select",
-    options: TIMEZONE_OPTIONS,
+    kind: "timezone",
+    groups: TIMEZONE_GROUPS,
   }));
 
 export const widgetSettingsFields: Partial<

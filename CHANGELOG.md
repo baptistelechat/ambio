@@ -30,6 +30,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
   you can drag widgets on directly (previously read-only), with the widget picker and
   background settings organized into Widget/Background tabs in a bottom drawer you swipe up
   to open and down to dismiss
+- Timezone settings (multi-timezone clock widgets) now offer every world timezone, grouped
+  by region with its current UTC offset shown (e.g. "Paris (UTC+2)"), instead of a short
+  fixed list
+- Location settings (weather, air quality, UV, pollen widgets) now suggest matching French
+  city names as you type
 
 ### Changed
 
@@ -60,3 +65,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - The "Publish" button could be pushed off-screen and unreachable in the mobile settings
   drawer
 - Browser translation prompt no longer pops up on the app (page language wasn't declared)
+- Multi-timezone clock widget always showed the moon icon, even in broad daylight; it now
+  shows sunrise, sun, sunset, or moon depending on the actual local hour in each timezone
+- Hourly weather widget showed the day's first 6 hours (starting at midnight) instead of
+  the next 6 hours from now, and displayed a doubled "hh" instead of "h" after each hour
+- Raspberry Pi status widget could get stuck showing "—" for CPU temperature

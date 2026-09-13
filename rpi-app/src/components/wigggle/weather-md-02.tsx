@@ -14,18 +14,21 @@ export default function WidgetDemo({
       : "Challans";
   const { data: weather, city, isLoading } = useConfiguredWeather(location);
 
+  const startIndex = Math.max(
+    (weather?.hourly.time.findIndex((t) => new Date(t) >= new Date()) ?? 0) - 1,
+    0,
+  );
   const next6Hours =
-    weather?.hourly.time.slice(0, 6).map((time, index) => {
-      const date = new Date(time);
-      return {
-        time: date.toLocaleTimeString("fr-FR", {
-          hour: "numeric",
-          hour12: false,
-        }),
-        temp: weather.hourly.temperature[index],
-        weatherCode: weather.hourly.weatherCode[index],
-      };
-    }) || [];
+    weather?.hourly.time
+      .slice(startIndex, startIndex + 6)
+      .map((time, index) => {
+        const date = new Date(time);
+        return {
+          time: date.getHours(),
+          temp: weather.hourly.temperature[startIndex + index],
+          weatherCode: weather.hourly.weatherCode[startIndex + index],
+        };
+      }) || [];
 
   if (isLoading) {
     return (

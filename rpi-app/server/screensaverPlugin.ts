@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import type { IncomingMessage } from "node:http";
 import fs from "node:fs";
 import os from "node:os";
@@ -96,13 +97,39 @@ const parseJsonStringArray = (value: string | null, max: number): string[] => {
 
 const CPU_THERMAL_ZONE_PATH = "/sys/class/thermal/thermal_zone0/temp";
 
+// Fallback sur l'utilitaire officiel Raspberry Pi : plus lent (spawn d'un process)
+// mais robuste si le chemin sysfs bouge (renumérotation de thermal_zone après reboot, permissions...).
+const readCpuTempViaVcgencmd = (): number | null => {
+  try {
+    const out = execFileSync("vcgencmd", ["measure_temp"], {
+      encoding: "utf-8",
+      timeout: 2000,
+    });
+    const match = out.match(/temp=([\d.]+)/);
+    return match ? parseFloat(match[1]) : null;
+  } catch (err) {
+    console.error(
+      "[system-status] échec lecture température CPU via vcgencmd:",
+      err,
+    );
+    return null;
+  }
+};
+
 const readCpuTempC = (): number | null => {
   try {
     const raw = fs.readFileSync(CPU_THERMAL_ZONE_PATH, "utf-8");
     return parseInt(raw, 10) / 1000;
-  } catch {
-    // Absent hors Linux/RPi (ex: dev sur Windows) — pas une erreur.
-    return null;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      // Absent hors Linux/RPi (ex: dev sur Windows) — pas une erreur, pas de fallback à tenter.
+      return null;
+    }
+    console.error(
+      "[system-status] échec lecture température CPU via sysfs:",
+      err,
+    );
+    return readCpuTempViaVcgencmd();
   }
 };
 

@@ -51,6 +51,23 @@ function SelectContent({
   );
 }
 
+const SelectGroup = SelectPrimitive.Group;
+
+function SelectLabel({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+  return (
+    <SelectPrimitive.Label
+      className={cn(
+        "px-2 py-1.5 text-xs font-medium text-muted-foreground",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 function SelectItem({
   className,
   children,
@@ -74,4 +91,12 @@ function SelectItem({
   );
 }
 
-export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue };
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+};

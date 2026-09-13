@@ -5,7 +5,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -19,6 +21,7 @@ import { Slider } from "@/components/ui/slider";
 import { widgetLabels } from "@/lib/types";
 import { widgetSettingsFields } from "@/lib/widgetSettings";
 import { ChecklistField } from "@/routes/Editor/components/ChecklistField";
+import { LocationInput } from "@/routes/Editor/components/LocationInput";
 import { useEditorStore } from "@/store/editorStore";
 
 export const SettingsPanel = () => {
@@ -62,6 +65,16 @@ export const SettingsPanel = () => {
                           })
                         }
                       />
+                    ) : field.kind === "location" ? (
+                      <LocationInput
+                        id={field.key}
+                        defaultValue={String(widget.settings[field.key] ?? "")}
+                        onCommit={(value) =>
+                          updateWidgetSettings(widget.id, {
+                            [field.key]: value,
+                          })
+                        }
+                      />
                     ) : field.kind === "select" ? (
                       <Select
                         defaultValue={String(widget.settings[field.key] ?? "")}
@@ -79,6 +92,34 @@ export const SettingsPanel = () => {
                             <SelectItem key={option.value} value={option.value}>
                               {option.label}
                             </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : field.kind === "timezone" ? (
+                      <Select
+                        defaultValue={String(widget.settings[field.key] ?? "")}
+                        onValueChange={(value) =>
+                          updateWidgetSettings(widget.id, {
+                            [field.key]: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger id={field.key}>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {field.groups.map((group) => (
+                            <SelectGroup key={group.area}>
+                              <SelectLabel>{group.label}</SelectLabel>
+                              {group.options.map((option) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
                           ))}
                         </SelectContent>
                       </Select>
