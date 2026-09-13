@@ -140,4 +140,18 @@ Session close avec `react-doctor --scope changed` (score 79/100, un vrai correct
 - [LRN-020](learnings/LRN-020.md) — Un service système peut échouer via un app-op OEM
 - [LRN-021](learnings/LRN-021.md) — Une appli tierce fluide en vidéo n'implique pas qu'un `<video>` HTML le sera
 - [BLK-014](blockers/BLK-014.md) — Bandeau d'actualités reste saccadé (ouvert)
-- [BLK-015](blockers/BLK-015.md) — Écran de veille bloqué par `APP_AUTO_START` (résolu)
+- [ZBLK-015](archive/blockers/ZBLK-015.md) — Écran de veille bloqué par `APP_AUTO_START` (résolu)
+
+## 2026-09-13
+
+Reprise de [BLK-014](blockers/BLK-014.md) (bandeau d'actualités saccadé) sur proposition de Baptiste : plutôt que continuer à chercher la cause du jank sur le scroll continu (3 tentatives déjà ratées), basculer sur un affichage d'un item à la fois avec un fade court (250ms), en rotation toutes les 8s — testé en direct dans le Browser pane (ajout temporaire du widget sur le canvas, vérifié le changement d'item, puis retiré pour ne pas modifier la config de Baptiste). Le keyframe CSS `ambio-news-marquee` devenu mort a été supprimé au passage.
+
+Baptiste a ensuite signalé que le texte affiché était tronqué à une ligne et a proposé d'en autoriser deux. Vérification en résolution réelle via le DOM (`offsetHeight`) que 2 lignes de `text-2xl` (64px) tiennent largement dans la hauteur réelle du widget (99px) — l'aperçu éditeur zoomé donnait à tort l'impression que ça ne rentrerait pas. Passage de `truncate` à `line-clamp-2` (+ `whitespace-normal` pour contrer le `whitespace-nowrap` hérité du widget parent).
+
+Session close : `react-doctor --scope changed` a remonté 2 vrais bugs sur `NewsTickerWidget.tsx` (score 56→57/100) — un `setTimeout` imbriqué dans le `setInterval` de rotation jamais nettoyé (fuite pouvant provoquer un state update périmé si un rechargement de flux RSS survient pendant le fade), et un reset d'index fait via `useEffect` plutôt que pendant le render (recommandation React officielle). Les deux corrigés ; un signalement résiduel sur le premier point s'est révélé un faux positif de l'analyse statique (le `clearTimeout` existe bien, juste sur une variable `let` assignée dans un callback imbriqué que l'outil ne trace pas). `CHANGELOG.md` mis à jour, commit + push (`🐛 (News ticker)`).
+
+**Entrées clés :**
+
+- [BDR-023](decisions/BDR-023.md) — Bandeau d'actualités : swap périodique plutôt que scroll continu
+- [LRN-022](learnings/LRN-022.md) — Ajuster un state dérivé d'une prop pendant le render, pas via useEffect
+- [LRN-023](learnings/LRN-023.md) — Un setTimeout imbriqué dans un setInterval doit être nettoyé séparément

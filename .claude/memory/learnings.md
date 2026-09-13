@@ -27,3 +27,5 @@ register: learnings
 | [LRN-019](learnings/LRN-019.md) | 2026-09-12 | `dumpsys gfxinfo` pour objectiver un ressenti de saccade Android                      | #android #dumpsys #gfxinfo #performance #debugging                  |
 | [LRN-020](learnings/LRN-020.md) | 2026-09-12 | Service Android démarré par le système peut échouer via un app-op OEM                 | #android #appops #oem-restriction #dreamservice #adb                |
 | [LRN-021](learnings/LRN-021.md) | 2026-09-12 | Appli tierce fluide en vidéo ⇏ `<video>` HTML profite du même chemin matériel         | #android #webview #video #hardware-acceleration #hypothesis-testing |
+| [LRN-022](learnings/LRN-022.md) | 2026-09-13 | Ajuster un state dérivé d'une prop pendant le render, pas via useEffect               | #react #useeffect #state #render #react-doctor                      |
+| [LRN-023](learnings/LRN-023.md) | 2026-09-13 | Un setTimeout imbriqué dans un setInterval doit être nettoyé séparément               | #react #useeffect #settimeout #setinterval #cleanup #react-doctor   |

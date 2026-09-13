@@ -28,3 +28,4 @@ register: decisions
 | [BDR-020](decisions/BDR-020.md) | 2026-09-12 | Largeur de widget pilotée par override d'instance (`settings.width`) | #widget-sizing #grid #architecture #react                           | actif  |
 | [BDR-021](decisions/BDR-021.md) | 2026-09-12 | Flux RSS résolus uniquement via un catalogue serveur                 | #security #ssrf #rss #api-design                                    | actif  |
 | [BDR-022](decisions/BDR-022.md) | 2026-09-12 | Réassignation automatique du dream Android (`DreamRegistrar`)        | #android #dreamservice #self-healing #settings-secure               | actif  |
+| [BDR-023](decisions/BDR-023.md) | 2026-09-13 | Bandeau d'actualités : swap périodique plutôt que scroll continu     | #news-ticker #animation #performance #jank #tv #workaround          | actif  |

@@ -1,11 +1,11 @@
 ---
-id: BLK-015
+id: ZBLK-015
 type: blocker
 date: 2026-09-12
 tags: [android, dreamservice, appops, tcl, oem-restriction]
 ---
 
-# BLK-015 — Écran de veille ne se lançait pas systématiquement via le bouton TV
+# ZBLK-015 — Écran de veille ne se lançait pas systématiquement via le bouton TV
 
 | Friction                                                                                                                         | Cause réelle                                                                                                                                                                                                                                                                                                                    | Solution                                                                                                                                                                                                           | Statut |
 | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
@@ -13,5 +13,5 @@ tags: [android, dreamservice, appops, tcl, oem-restriction]
 
 ## Références
 
-- [LRN-020](../learnings/LRN-020.md) — pattern généralisable (app-ops OEM)
-- [BDR-022](../decisions/BDR-022.md) — filet de sécurité ajouté en conséquence
+- [LRN-020](../../learnings/LRN-020.md) — pattern généralisable (app-ops OEM)
+- [BDR-022](../../decisions/BDR-022.md) — filet de sécurité ajouté en conséquence

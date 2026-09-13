@@ -19,3 +19,4 @@ register: archive_blockers
 | [ZBLK-011](blockers/ZBLK-011.md) | 2026-09-12 | Drag devenu lent après l'ajout d'un aperçu (ghost) de la case cible                   | #performance #drag-drop #re-render #canvas #react-rnd | résolu |
 | [ZBLK-012](blockers/ZBLK-012.md) | 2026-09-12 | Widget statut RPi ne démarrait plus après `pnpm install` sur pm2 (cache Vite périmé)  | #vite #cache #pm2 #deployment #rpi                    | résolu |
 | [ZBLK-013](blockers/ZBLK-013.md) | 2026-09-12 | Staging git impossible via `git add`/`git rm --cached` sur fichier édité en parallèle | #git #staging #concurrent-editing #parallel-session   | résolu |
+| [ZBLK-015](blockers/ZBLK-015.md) | 2026-09-12 | Écran de veille ne se lançait pas systématiquement via le bouton TV                   | #android #dreamservice #appops #tcl #oem-restriction  | résolu |
